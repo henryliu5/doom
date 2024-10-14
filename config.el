@@ -29,7 +29,7 @@
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
-(setq doom-font (font-spec :family "JetBrains Mono" :size 13.0))
+(setq doom-font (font-spec :family "JetBrains Mono" :size 18.0))
 
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
@@ -156,8 +156,7 @@
         ))))
 
 (defun my-start-pdf-refresh-timer ()
-  "Start a timer to refresh all PDF buffers every 5 seconds."
-  (run-at-time "0 sec" 5 'my-refresh-pdf-buffers))
+  "Start a timer to refresh all PDF buffers every 5 seconds." (run-at-time "0 sec" 5 'my-refresh-pdf-buffers))
 
 (defun my-stop-pdf-refresh-timer ()
   "Stop the PDF refresh timer."
@@ -168,30 +167,20 @@
 
 ;; Visual delimiter from elliott
 (defun add-window-divider ()
-  (set-face-background 'vertical-border "#555555")
-  (set-face-foreground 'vertical-border (face-background 'vertical-border))
+  (interactive)
+  (custom-set-faces! '(vertical-border :foreground "#7dc4e4"))
   (setq window-divider-default-places t
-        window-divider-default-bottom-width 8
-        window-divider-default-right-width 8)
-  (window-divider-mode))
+        window-divider-default-bottom-width 1
+        window-divider-default-right-width 1)
+  (window-divider-mode)
+  )
 (add-hook 'after-init-hook 'add-window-divider)
 (add-hook 'server-after-make-frame-hook 'add-window-divider)
 
-(require 'treesit)
-(add-hook 'python-ts-mode-hook #'treesitter-context-mode)
-
-(add-hook 'python-mode-hook
-          (defun which-function-header-line-enable ()
-            (require 'which-func)
-            (setq header-line-format
-                  '((:eval (which-function))))))
-
-;; (which-function-mode)
-;; (setq-default header-line-format
-;;               '((which-func-mode ("" which-func-format " "))))
-(setq mode-line-misc-info
-            ;; We remove Which Function Mode from the mode line, because it's mostly
-            ;; invisible here anyway.
-            (assq-delete-all 'which-func-mode mode-line-misc-info))
-
 (load! "work.el")
+
+
+; Header line context for python
+(load! "context.el")
+(add-hook 'python-mode-hook 'my-context-mode)
+(set-face-attribute 'header-line nil :background "#1e2030")
